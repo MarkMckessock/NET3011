@@ -1,0 +1,72 @@
+conf t
+hostname DLS2
+
+vtp mode server
+vtp domain SWLAB
+vtp version 2
+
+vlan 99
+  name MANAGEMENT
+vlan 100
+  name SERVERS
+vlan 110
+  name GUEST
+vlan 120
+  name OFFICE
+vlan 999
+  name PARKING_LOT
+  state suspend
+vlan 666
+  name NATIVE_DO_NOT_USE
+exit
+
+int vlan99
+  ip address 10.1.99.102 255.255.255.0
+  ipv6 address 2001:db8:cafe:99::102/64
+  ipv6 address fe80::6 link-local
+  no shutdown
+exit
+
+int range gi0/1-10
+  switchport trunk encap dot1q
+  switchport trunk native vlan 666
+  switchport trunk allowed vlan except 1,999
+  switchport mode trunk
+  switchport nonegotiate
+  no shutdown
+exit
+
+spanning-tree mode mst
+do clear spanning-tree detected-protocols
+
+spanning-tree mst configuration
+  name CCNP
+  revision 1
+  instance 1 vlan 99,100
+exit
+
+vtp version 3
+do vtp primary vlan force
+vtp mode server mst
+do vtp primary mst force
+
+spanning-tree mst configuration
+  instance 2 vlan 110,120
+exit
+
+spanning-tree mst 0-1 root secondary
+spanning-tree mst 2 root primary
+
+int range gi0/9-10
+  shut
+exit
+
+ipv6 unicast-routing
+
+ipv6 router ospf 6
+  router-id 6.6.6.6
+exit
+
+int vlan99
+  ipv6 ospf 6 area 0
+exit

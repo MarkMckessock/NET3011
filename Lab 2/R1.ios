@@ -1,0 +1,16 @@
+conf t
+hostname R1
+
+int gi0/1
+ip address 10.1.100.1 255.255.255.0 
+no shutdown
+
+int loopback0
+  ip address 10.10.10.10 255.255.255.255
+  no shutdown
+exit
+
+router eigrp 4
+  network 10.0.0.0
+  router-id 10.10.10.10
+exit
