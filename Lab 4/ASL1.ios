@@ -1,0 +1,49 @@
+conf t
+hostname ALS1
+
+vtp domain SWLAB
+vtp version 3
+vtp mode client
+vtp password cisco123
+
+int range fa0/1-24
+  shutdown
+exit
+
+int fa0/1
+  switchport trunk native vlan 666
+  switchport mode trunk
+  switchport nonegotiate
+  no shutdown
+exit
+
+int range fa0/5-7
+  switchport trunk native vlan 666
+  switchport mode trunk
+  switchport nonegotiate
+  no shutdown
+exit
+
+int range fa0/5-6
+  channel-group 1 mode desirable
+exit
+
+int range fa0/9-10
+  switchport trunk native vlan 666
+  switchport mode trunk
+  switchport nonegotiate
+  no shutdown
+exit
+
+int vlan99
+  ip address 10.1.99.4 255.255.255.0
+  no shutdown
+exit
+
+int range fa0/1, fa0/7
+  channel-group 2 mode active
+exit
+
+port-channel load-balance src-dst-ip
+
+ip default-gateway 10.1.99.5

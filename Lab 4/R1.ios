@@ -1,0 +1,21 @@
+conf t
+hostname R1
+
+int gi0/1
+ip address 10.1.100.1 255.255.255.0 
+no shutdown
+
+int loopback0
+  ip address 10.10.10.10 255.255.255.255
+  no shutdown
+exit
+
+router bgp 500
+  bgp router-id 10.10.10.10
+  bgp log-neighbor-changes
+  network 0.0.0.0
+  network 10.10.10.10 mask 255.255.255.255
+  neighbor 10.1.100.2 remote-as 300
+exit
+
+ip route 0.0.0.0 0.0.0.0 loopback0

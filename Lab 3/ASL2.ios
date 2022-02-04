@@ -20,7 +20,11 @@ vlan 666
   name NATIVE_DO_NOT_USE
 exit
 
-int range fa0/1-10
+int range fa0/1-24
+  shutdown
+exit
+
+int range fa0/5-10
   switchport trunk native vlan 666
   switchport trunk allowed vlan except 1,999
   switchport mode trunk

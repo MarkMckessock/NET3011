@@ -1,0 +1,46 @@
+conf t
+hostname DLS2
+
+vtp domain SWLAB
+vtp version 3
+vtp mode client
+vtp password cisco123
+
+int vlan99
+  ip address 10.1.99.6 255.255.255.0
+  no shutdown
+exit
+
+int range gi0/1-24
+  shutdown
+exit
+
+int range gi0/3-4
+  switchport trunk encap dot1q
+  switchport trunk native vlan 666
+  switchport mode trunk
+  switchport nonegotiate
+  channel-group 3 mode on
+  no shutdown
+exit
+
+int range gi0/7-10
+  switchport trunk encap dot1q
+  switchport trunk native vlan 666
+  switchport mode trunk
+  switchport nonegotiate
+  no shutdown
+exit
+
+spanning-tree vlan 99,100,110,120,666 root secondary
+
+ip routing
+int lo0
+  ip address 6.6.6.6 255.255.255.255
+exit
+
+router ospf 4
+  router-id 6.6.6.6
+  network 6.6.6.6 0.0.0.0 area 0
+  network 10.1.99.0 0.0.0.255 area 0
+exit
