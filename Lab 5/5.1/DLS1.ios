@@ -29,7 +29,7 @@ vlan 20
 vlan 30
   name Server-Farm1
 vlan 40
-  name Servier-Farm2
+  name Server-Farm2
 vlan 99
   name Management
 exit
