@@ -1,0 +1,102 @@
+conf t
+int vlan 99
+  ipv6 address 2001:db8:cafe:99::d1/64
+  ipv6 address fe80::d1 link-local
+  no shutdown
+exit
+
+int range gi0/3 - 4
+  channel-group 10 mode desirable
+exit
+
+int range gi0/1 - 2
+  channel-group 1 mode desirable
+exit
+
+vtp domain SWITCHLAB
+vtp version 2
+vtp mode server
+
+vlan 99
+  name Management
+vlan 100
+  name Servers
+vlan 110
+  name Guest
+vlan 120
+  name office
+vlan 200
+  name Voice
+exit
+
+spanning-tree vlan 99,110,120 root primary
+spanning-tree vlan 100,,200 root secondary
+
+ipv6 unicast-routing
+ipv6 router eigrp 1
+  no shutdown
+  router-id 1.1.1.1
+exit
+
+int gi0/11
+  no switchport
+  ipv6 address fe80::d1 link-local
+  ipv6 address 2001:db8:cafe:20::d1/64
+  ipv6 eigrp 1
+  no shutdown
+exit
+
+int vlan 99
+  standby version 2
+  standby 99 ipv6 autoconfig
+  standby 99 priority 110
+  standby 99 preempt
+  ipv6 eigrp 1
+  no shutdown
+exit
+
+int vlan 100
+  ipv6 address 2001:db8:cafe:100::d1/64
+  ipv6 address fe80::d1 link-local
+  standby version 2
+  standby 110 ipv6 autoconfig
+  standby 110 priority 110
+  standby 110 preempt
+  ipv6 eigrp 1
+  no shutdown
+exit
+
+int vlan 120
+  ipv6 address 2001:db8:cafe:120::d1/64
+  ipv6 address fe80::d1 link-local
+  standby version 2
+  standby 120 ipv6 autoconfig
+  standby 120 priority 110
+  standby 120 preempt
+  ipv6 eigrp 1
+  no shutdown
+exit
+
+int vlan 200
+  ipv6 address 2001:db8:cafe:200::d1/64
+  ipv6 address fe80::d1 link-local
+  standby version 2
+  standby 200 ipv6 autoconfig
+  standby 200 preempt
+  ipv6 eigrp 1
+  no shutdown
+exit
+
+track 1 interface gi0/11 line-protocol
+
+int vlan 99
+  standby 99 track 1 30
+exit
+
+int vlan 110
+  standby 110 track 1 30
+exit
+
+int vlan 120
+  standby 120 track 1 30
+exit
