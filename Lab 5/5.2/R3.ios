@@ -1,0 +1,38 @@
+conf t
+hostname R3
+ip multicast-routing
+
+int gi0/2
+  ip address 172.16.30.3 255.255.255.0
+  ip pim sparse-mode
+  no shutdown
+exit
+
+int gi0/1
+  ip address 172.16.50.3 255.255.255.0
+  ip pim sparse-mode
+  ip igmp join-group 239.17.1.1
+  no shutdown
+exit
+
+int s0/0/0
+  ip address 172.16.40.3 255.255.255.0
+  ip pim sparse-mode
+  no shutdown
+exit
+
+int lo0
+  ip address 30.30.30.30 255.255.255.255
+  ip pim sparse-mode
+  no shutdown
+exit
+
+router ospf 4
+  router-id 30.30.30.30
+  network 30.30.30.30 0.0.0.0 area 0
+  network 172.16.30.0 0.0.0.255 area 0
+  network 172.16.40.0 0.0.0.255 area 0
+  network 172.16.50.0 0.0.0.255 area 0
+exit
+
+ip pim rp-candidate loopback 0 interval 10 priority 10
