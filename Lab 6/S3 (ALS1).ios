@@ -10,6 +10,11 @@ int range fa0/3 - 4
   channel-group 2 mode desirable
 exit
 
+int range po1, po2
+  switchport mode trunk
+exit
+
+
 vtp domain SWITCHLAB
 vtp version 2
 vtp mode client
@@ -23,4 +28,4 @@ int vlan 99
 exit
 
 ! Use the address from 'show standby brief' on DLS1 below
-ipv6 route ::/0 Vlan99 <addr>
+ipv6 route ::/0 Vlan99 FE80::5:73FF:FEA0:63

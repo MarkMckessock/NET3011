@@ -8,12 +8,17 @@ int range gi0/1 - 2
   channel-group 2 mode desirable
 exit
 
+int range po2, po10
+  switchport trunk encapsulation dot1q
+  switchport mode trunk
+exit
+
 vtp domain SWITCHLAB
 vtp version 2
 vtp mode server
 
 spanning-tree vlan 99,110,120 root secondary
-spanning-tree vlan 100,,200 root primary
+spanning-tree vlan 100,200 root primary
 
 ipv6 unicast-routing
 ipv6 router eigrp 1
@@ -30,7 +35,7 @@ int gi0/11
 exit
 
 int vlan 99
-  ipv6 address fe80:::d2 link-local
+  ipv6 address fe80::d2 link-local
   standby version 2
   standby 99 ipv6 autoconfi
   standby 99 preempt
@@ -39,7 +44,7 @@ int vlan 99
 exit
 
 int vlan 100
-  ipv6 address 2001::db8:cafe:100::d2/64
+  ipv6 address 2001:db8:cafe:100::d2/64
   ipv6 address fe80::d2 link-local
   standby version 2
   standby 100 ipv6 autoconfig
@@ -82,9 +87,9 @@ exit
 track 1 interface gi0/11 line-protocol
 
 int vlan 100
-  standby 100 track 1 30
+  standby 100 track 1 decrement 30
 exit
 
 int vlan 200
-  standby 200 track 1 30
+  standby 200 track 1 decrement 30
 exit
