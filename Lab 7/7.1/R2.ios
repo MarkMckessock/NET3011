@@ -1,0 +1,21 @@
+conf t
+hostname R2
+
+int loopback 0
+  ip address 10.1.202.1 255.255.255.255
+  no shutdown
+exit
+
+int gi0/0/0
+  ip address 10.1.1.2 255.255.255.252
+  no shutdown
+exit
+
+int gi0/0/1
+  ip address 10.1.1.5 255.255.255.252
+  no shutdown
+exit
+
+router eigrp 1
+  network 10.0.0.0
+exit

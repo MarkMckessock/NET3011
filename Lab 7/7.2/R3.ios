@@ -1,0 +1,15 @@
+conf t
+
+access-list 33 permit 10.1.0.0 0.0.0.255
+! ip nat pool POOLEDNAT 209.165.224.5 209.165.224.6 netmask 255.255.255.0
+
+! ip nat inside source list 33 pool POOLEDNAT
+ip nat inside source list 33 interface g0/0/0 overload
+
+int gi0/0/0
+  ip nat outside
+exit
+
+int gi0/0/1
+  ip nat inside
+exit

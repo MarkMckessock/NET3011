@@ -1,0 +1,43 @@
+conf t
+hostname ALS1
+
+int range fa0/1-24
+  shutdown
+exit
+
+int range fa0/1, fa0/9
+  no shutdown
+exit
+
+vtp domain GLBP
+vtp version 2
+vtp mode client
+
+int vlan 20
+  ip address 10.1.20.10 255.255.255.0
+  no shutdown
+exit
+
+int vlan 10
+  ip address 10.1.10.10 255.255.255.0
+  no shutdown
+exit
+
+int vlan 99
+  ip address 10.1.99.10 255.255.255.0
+  no shutdown
+exit
+
+int range fa0/1, fa0/9
+  switchport mode trunk
+exit
+
+ip default-gateway 10.1.10.254
+
+ntp server 10.1.10.1
+clock timezone CST -6
+clock summer-time CDT recurring
+ntp authenticate
+ntp authentication-key 1 md5 cisco
+ntp trusted-key 1
+ntp server 10.1.10.1 key 1

@@ -1,0 +1,11 @@
+conf t
+
+ip nat inside source static 10.0.0.2 209.165.200.99
+
+int gi0/0/0
+  ip nat outside
+exit
+
+int gi0/0/1
+  ip nat inside
+exit

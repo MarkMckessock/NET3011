@@ -1,0 +1,40 @@
+conf t 
+hostname R3
+
+int gi0/1
+  no shutdown
+exit
+
+int gi0/1.10
+  description Office VLAN 10
+  encapsulation dot1q 10
+  ip address 10.1.10.2 255.255.255.0
+  glbp 10 ip 10.1.10.254
+  glbp 10 preempt
+  glbp 10 authentication md5 key-string cisco123
+exit
+int gi0/1.20
+  description Server VLAN 20
+  encapsulation dot1q 20
+  ip address 10.1.20.2 255.255.255.0
+  glbp 20 ip 10.1.20.254
+  glbp 20 preempt
+  glbp 20 authentication md5 key-string cisco123
+exit
+int gi0/1.99
+  description Management VLAN 99
+  encapsulation dot1q 99
+  ip address 10.1.99.2 255.255.255.0
+  glbp 99 ip 10.1.99.254
+  glbp 99 preempt
+  glbp 99 authentication md5 key-string cisco123
+exit
+
+int gi0/2
+  ip address 10.1.1.6 255.255.255.252
+  no shutdown
+exit
+
+router eigrp 1
+  network 10.0.0.0
+exit

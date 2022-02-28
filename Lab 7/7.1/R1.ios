@@ -1,0 +1,57 @@
+conf t
+hostname R1
+
+int gi0/1
+  no shutdown
+exit
+
+track 15 interface gi0/0 line-protocol
+
+int gi0/1.10
+  description Office VLAN 10
+  encapsulation dot1q 10
+  ip address 10.1.10.1 255.255.255.0
+  glbp 10 ip 10.1.10.254
+  glbp 10 priority 150
+  glbp 10 preempt
+  glbp 10 weighting 110 lower 85 upper 105
+  glbp 10 weighting track 15 decrement 30
+  glbp 10 authentication md5 key-string cisco123
+exit
+int gi0/1.20
+  description Server VLAN 20
+  encapsulation dot1q 20
+  ip address 10.1.20.1 255.255.255.0
+  glbp 20 ip 10.1.20.254
+  glbp 20 priority 150
+  glbp 20 preempt
+  glbp 20 weighting 110 lower 85 upper 105
+  glbp 20 weighting track 15 decrement 30
+  glbp 20 authentication md5 key-string cisco123
+exit
+int gi0/1.99
+  description Management VLAN 99
+  encapsulation dot1q 99
+  ip address 10.1.99.1 255.255.255.0
+  glbp 99 ip 10.1.99.254
+  glbp 99 priority 150
+  glbp 99 preempt
+  glbp 99 weighting 110 lower 85 upper 105
+  glbp 99 weighting track 15 decrement 30
+  glbp 99 authentication md5 key-string cisco123
+exit
+
+int gi0/0
+  ip address 10.1.1.1 255.255.255.252
+  no shutdown
+exit
+
+router eigrp 1
+  network 10.0.0.0
+exit
+
+do clock set 12:00:00 28 february 2022
+ntp master 10
+ntp authenticate
+ntp authentication-key 1 md5 cisco
+ntp trusted-key 1
