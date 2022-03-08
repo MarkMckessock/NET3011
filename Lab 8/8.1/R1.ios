@@ -1,0 +1,21 @@
+conf t
+hostname R1
+
+int gi0/1
+  ip address 172.16.100.10 255.255.255.0
+  no shutdown
+exit
+
+username admin privilege 15 password cisco
+line vty 0 4
+  login local
+  transport input telnet ssh
+exit
+
+int lo0
+  ip address 10.10.10.10 255.255.255.255
+exit
+
+router eigrp 1
+  network 0.0.0.0
+exit

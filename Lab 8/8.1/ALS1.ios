@@ -1,0 +1,56 @@
+conf t
+hostname ALS1
+
+int range fa0/1-24
+  shutdown
+exit
+
+int range fa0/1, fa0/9
+  no shutdown
+exit
+
+vtp domain swlab
+vtp version 2
+vtp mode server
+
+int vlan 100
+  ip address 172.16.100.5 255.255.255.0
+  no shutdown
+exit
+
+int fa0/11
+  switchport mode access
+  switchport access vlan 100
+  spanning-tree portfast
+exit
+
+ip default-gateway 172.16.100.1
+
+int range fa0/1, fa0/9
+  switchport mode trunk
+  switchport nonegotiate
+exit
+
+username admin privilege 15 password cisco
+line vty 0 4
+  login local
+  transport input telnet ssh
+exit
+
+! int fa0/11
+!   storm-control unicast level 65 35
+!   storm-control broadcast level pps 1000 300
+!   storm-control multicast level 40 25
+!   storm-control action trap
+!   no shutdown
+! exit
+
+int fa0/11
+  no shutdown
+  switchport port-security
+  switchport port-security maximum 12
+  switchport port-security mac-address sticky
+exit
+
+errdisable recovery cause psecure-violation
+errdisable recovery interval 30

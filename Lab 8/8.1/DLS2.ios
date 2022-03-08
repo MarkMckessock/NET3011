@@ -1,0 +1,56 @@
+conf t
+hostname DLS2
+ip routing
+
+int range gi0/1-24
+  shutdown
+exit
+
+int range gi0/3, gi0/9
+  no shutdown
+exit
+
+vtp domain swlab
+vtp version 2
+vtp mode server
+
+int vlan 99
+  ip address 172.16.99.4 255.255.255.0
+  standby 99 ip 172.16.99.1
+  standby 99 preempt
+  no shutdown
+exit
+
+int vlan 100
+  ip address 172.16.100.4 255.255.255.0
+  standby 100 ip 172.16.100.1
+  standby 100 preempt
+  no shutdown
+exit
+
+int vlan 200
+  ip address 172.16.200.4 255.255.255.0
+  standby 200 ip 172.16.200.1
+  standby 200 priority 150
+  standby 200 preempt
+  no shutdown
+exit
+
+int range gi0/3, gi0/9
+  switchport trunk encapsulation dot1q
+  switchport mode trunk
+  switchport nonegotiate
+exit
+
+username admin privilege 15 password cisco
+line vty 0 4
+  login local
+  transport input telnet ssh
+exit
+
+spanning-tree vlan 99,100 root secondary
+spanning-tree vlan 200 root primary
+
+router eigrp 1
+  network 0.0.0.0
+exit
